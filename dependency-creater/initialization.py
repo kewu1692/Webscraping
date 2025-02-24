@@ -1,7 +1,7 @@
 import mysql.connector
 from mysql.connector import Error
 
-# create connection
+
 try:
     # create connection
     conn = mysql.connector.connect(
