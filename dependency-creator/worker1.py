@@ -1,20 +1,31 @@
 import functions as fun
 import config
-
+from mysql.connector import Error
+import time
 
 try:
-    # create connection
-    conn = fun.create_conn(config.host, config.user, config.password)
+    conn, cursor = None, None
+    while True:
 
-    # create cursor
-    cursor = fun.create_cur(conn)
+        print("Worker polling...")
+        # create connection
+        conn = fun.create_conn(config.host, config.user, config.password)
 
-    # working
-    fun.set_up_new_res(cursor)
+        # create cursor
+        cursor = fun.create_cur(conn)
 
+        # working
+        db_replace = {"DB_NAME": "global_database"}
+        fun.set_up_new_res(cursor,db_replace)
 
-except KeyboardInterrupt:
-    print("Monitoring stopped.")
+        conn.commit()
+
+        print("Worker done, going back to sleep...")
+
+        time.sleep(5)
+
+except Error as e:
+    fun.roll_back(conn, e)
 
 finally:
     fun.close(cursor, conn)

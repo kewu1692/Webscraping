@@ -1,7 +1,6 @@
 from mysql.connector import Error
 import config
 import functions as fun
-import os
 
 
 try:
@@ -12,18 +11,11 @@ try:
     cursor = fun.create_cur(conn)
 
     # initialize global db
-    with open("./sql/initialization/global_db.sql", 'r') as file:
-        query = file.read()
-        cursor.execute(query)
+    db_replace = {"DB_NAME": "global_database"}
+    fun.execute_query_from_path(cursor,config.create_db_path,db_replace)
 
-    # initialize tables -> function
-    directory = "./sql/initialization"
-    for file in os.listdir(directory):
-        file_path = os.path.join(directory, file)
-        if os.path.isfile(file_path):
-            with open(file_path, 'r') as file:
-                query = file.read()
-                cursor.execute(query)
+    # initialize tables
+    fun.execute_queries_in_dir(cursor,config.init_tables_dir,db_replace)
 
     # commit changes
     conn.commit()
