@@ -1,9 +1,4 @@
-#
-#
-#
-#
-
-CREATE TABLE IF NOT EXISTS global_database.users (
+CREATE TABLE IF NOT EXISTS < DB_NAME >.users (
     user_id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(50),
     level INTEGER,
@@ -12,8 +7,3 @@ CREATE TABLE IF NOT EXISTS global_database.users (
     photo_count INTEGER,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )
-
-#
-#
-#
-#

@@ -1,9 +1,4 @@
-#
-#
-#
-#
-
-CREATE TABLE IF NOT EXISTS <RES_NAME>.reviews (
+CREATE TABLE IF NOT EXISTS < RES_NAME >.reviews (
     review_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT,
     rev_date DATE,
@@ -18,8 +13,3 @@ CREATE TABLE IF NOT EXISTS <RES_NAME>.reviews (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES global_database.users(user_id)
 )
-
-#
-#
-#
-#
