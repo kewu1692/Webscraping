@@ -5,23 +5,23 @@ import mysql_toolbox as tool
 
 try:
     # create connection
-    conn = tool.create_conn(config.host, config.user, config.password)
+    mysql_connection = tool.create_conn(config.host, config.user, config.password)
 
     # create cursor
-    cursor = tool.create_cur(conn)
+    cursor = tool.create_cur(mysql_connection)
 
     # initialize global db
-    db_replace = {"DB_NAME": "global_database"}
-    tool.execute_query_from_path(cursor,config.create_db_path,db_replace)
+    db_replace_map = {"DB_NAME": "global_database"}
+    tool.execute_query_from_path(cursor,config.create_db_path,db_replace_map)
 
     # initialize tables
-    tool.execute_queries_in_dir(cursor,config.init_tables_dir,db_replace)
+    tool.execute_queries_in_dir(cursor,config.init_tables_dir,db_replace_map)
 
     # commit changes
-    conn.commit()
+    mysql_connection.commit()
 
 except Error as error:
-    tool.roll_back(conn, error)
+    tool.roll_back(mysql_connection, error)
 
 finally:
-    tool.close(cursor, conn)
+    tool.close(cursor, mysql_connection)
