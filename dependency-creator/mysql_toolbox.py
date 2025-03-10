@@ -3,17 +3,13 @@ import os
 from mysql.connector import Error
 
 # create connection
-def create_conn(host, user, password):
+def create_connection(host, user, password):
     mysql_connection = mysql.connector.connect(
         host=host,
         user=user,
         password=password
         )
     return mysql_connection
-
-# create cursor
-def create_cur(mysql_connection):
-    return mysql_connection.cursor()
 
 
 # read_query_from_path reads sql query from a given path
@@ -52,7 +48,7 @@ def validate_replace_by_query(query, replace_map):
     ### valid value inside <>
 
 # execute_queries_in_dir takes path of dir,loop through files and get file path, read each query, check replacement, execute query
-def execute_queries_in_dir(cursor, directory, replace_map):
+def execute_queries_in_directory(cursor, directory, replace_map):
 
     for filename in os.listdir(directory):
         file_path = os.path.join(directory, filename)

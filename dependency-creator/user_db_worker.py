@@ -36,14 +36,14 @@ try:
 
         print("Worker polling...")
         # create connection
-        mysql_connection = tool.create_conn(config.host, config.user, config.password)
+        mysql_connection = tool.create_connection(config.host, config.user, config.password)
 
         # create cursor
-        cursor = tool.create_cur(mysql_connection)
+        cursor = mysql_connection.cursor()
 
         # working
         db_replace_map = {"DB_NAME": "global_database"}
-        tool.set_up_new_res(cursor,db_replace_map)
+        set_up_new_res(cursor,db_replace_map)
 
         mysql_connection.commit()
 
