@@ -1,5 +1,4 @@
 import mysql.connector
-import config
 import os
 from mysql.connector import Error
 
@@ -70,34 +69,7 @@ def execute_query_from_path(cursor, path, replace_dict):
     query = read_query_from_path(path)
     validate_replace_by_query(query, replace_dict)
     execute_query_with_replace(cursor, query, replace_dict)
-
-
-# find new res users
-def find_new_res_users(cursor,db_replace):
-    execute_query_from_path(cursor, config.new_res_path, db_replace)
-    rests = cursor.fetchall()
-    return rests
     
-# create db and review table for new res users
-def set_up_new_res(cursor,db_replace):
-    try:
-        rests = find_new_res_users(cursor,db_replace)
-        print(f"New restaurants found: {rests}")
-        for id, res in rests:
-            res_db_replace = {"DB_NAME": f"{res}"}
-            execute_query_from_path(cursor,config.create_db_path,res_db_replace)
-            print(f"Database created for {res}")
-            res_name_replace = {"RES_NAME": f"{res}"}
-            execute_query_from_path(cursor,config.reviews_path,res_name_replace)
-            print(f"Review table created for {res}")
-            id_replace = {"RES_ID": id }  
-            update_replace = db_replace | id_replace
-            execute_query_from_path(cursor,config.update_status_path,update_replace)
-            print(f"Status changed for {id}")
-
-    except Error as e:
-        print("Error Setting Up New Res:", e)
-    #### race condition
 
 # roll back
 def roll_back(conn, error):
