@@ -11,7 +11,7 @@ try:
     cursor = mysql_connection.cursor()
 
     # initialize global db
-    db_replace_map = {"DB_NAME": "global_database"}
+    db_replace_map = {"DB_NAME": "global_databases"}
     tool.execute_query_from_path(cursor,config.create_db_path,db_replace_map)
 
     # initialize tables
@@ -19,6 +19,7 @@ try:
 
     # commit changes
     mysql_connection.commit()
+    print("Initialization complete.")
 
 except Error as error:
     tool.roll_back(mysql_connection, error)
