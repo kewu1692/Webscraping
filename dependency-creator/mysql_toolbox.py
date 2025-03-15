@@ -1,6 +1,7 @@
 import mysql.connector
 import os
 from mysql.connector import Error
+import re
 
 # create connection
 def create_connection(host, user, password):
@@ -40,9 +41,12 @@ def validate_replace_by_query(query, replace_map):
         raise TypeError(f"Expected string, got {type(query).__name__}")
     if not isinstance(replace_map, dict):
         raise TypeError(f"Expected dict, got {type(replace_map).__name__}")
-    # replace map validation
+    # regular expression to find all names of placeholders, set for faster lookup
+    placeholders = set(re.findall(r'< (.*?) >', query))
+    # count number of placeholders
     placeholder_count = query.count("<")
-    if placeholder_count != len(replace_map) and :
+    # if count does not match or any key does not exist in placeholders
+    if placeholder_count != len(replace_map) and any(key not in placeholders for key in replace_map):
         return False
     else:
         return True
