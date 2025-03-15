@@ -5,15 +5,16 @@ import time
 
 # find new res users
 def find_new_res_users(cursor,replace_map):
+    print("Finding new restaurants...")
     tool.execute_query_from_path(cursor, config.new_res_path, replace_map)
     rests_list = cursor.fetchall()
+    print(f"New restaurants found: {rests_list}")
     return rests_list
     
 # create db and review table for new res users
 def set_up_new_res(cursor,replace_map):
     try:
         rests = find_new_res_users(cursor,replace_map)
-        print(f"New restaurants found: {rests}")
         for id, res in rests:
             res_db_replace_map = {"DB_NAME": f"{res}"}
             tool.execute_query_from_path(cursor,config.create_db_path,res_db_replace_map)
