@@ -43,7 +43,7 @@ try:
         cursor = mysql_connection.cursor()
 
         # working
-        db_replace_map = {"DB_NAME": "global_database"}
+        db_replace_map = {"DB_NAME": config.Global}
         set_up_new_res(cursor,db_replace_map)
 
         mysql_connection.commit()

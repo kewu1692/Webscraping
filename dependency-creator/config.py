@@ -25,3 +25,5 @@ update_status_path = os.path.join(ops_dir, "update_status_res.sql")
 res_dir = os.path.join(sql_path, "res")
 
 reviews_path = os.path.join(res_dir, "reviews.sql")
+
+Global = "global_database"

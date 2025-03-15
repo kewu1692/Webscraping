@@ -11,7 +11,7 @@ try:
     cursor = mysql_connection.cursor()
 
     # initialize global db
-    db_replace_map = {"DB_NAME": "global_databases"}
+    db_replace_map = {"DB_NAME": config.Global}
     tool.execute_query_from_path(cursor,config.create_db_path,db_replace_map)
 
     # initialize tables
