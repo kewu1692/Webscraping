@@ -34,29 +34,30 @@ def set_up_new_res(cursor,replace_map):
         print("Error Setting Up New Res:", e)
     #### race condition
 
-try:
-    conn, cursor = None, None
-    while True:
+def user_database_worker():
+    try:
+        conn, cursor = None, None
+        while True:
 
-        print("Worker polling...")
-        # create connection
-        mysql_connection = tool.create_connection(config.HOST, config.USER, config.PASSWORD)
+            print("Worker polling...")
+            # create connection
+            mysql_connection = tool.create_connection(config.HOST, config.USER, config.PASSWORD)
 
-        # create cursor
-        cursor = mysql_connection.cursor()
+            # create cursor
+            cursor = mysql_connection.cursor()
 
-        # working
-        db_replace_map = {"DB_NAME": config.GLOBAL}
-        set_up_new_res(cursor,db_replace_map)
+            # working
+            db_replace_map = {"DB_NAME": config.GLOBAL}
+            set_up_new_res(cursor,db_replace_map)
 
-        mysql_connection.commit()
+            mysql_connection.commit()
 
-        print("Worker done, going back to sleep...")
+            print("Worker done, going back to sleep...")
 
-        time.sleep(30)
+            time.sleep(30)
 
-except Error as e:
-    tool.roll_back(mysql_connection, e)
+    except Error as e:
+        tool.roll_back(mysql_connection, e)
 
-finally:
-    tool.close(cursor, mysql_connection)
+    finally:
+        tool.close(cursor, mysql_connection)
