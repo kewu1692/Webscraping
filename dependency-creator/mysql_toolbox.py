@@ -53,12 +53,10 @@ def validate_replace_by_query(query, replace_map):
             raise ValueError("Query is empty.")
         if not replace_map:
             raise ValueError("Replacement map is empty.")
-        print("Valid input.")
         if not isinstance(query, str):
             raise TypeError(f"Expected string, got {type(query).__name__}")
         if not isinstance(replace_map, dict):
             raise TypeError(f"Expected dict, got {type(replace_map).__name__}")
-        print("Valid input type.")
         placeholders = set(re.findall(r'< (.*?) >', query))
         placeholder_count = query.count("<")
         if placeholder_count != len(replace_map):
@@ -80,7 +78,6 @@ def execute_queries_in_directory(cursor, directory, replace_map):
         for filename in os.listdir(directory):
             file_path = os.path.join(directory, filename)
             if os.path.isfile(file_path):
-                print(f"Reading from {filename}...")
                 query = read_query_from_path(file_path)
                 validation_result = validate_replace_by_query(query, replace_map)
                 if validation_result:

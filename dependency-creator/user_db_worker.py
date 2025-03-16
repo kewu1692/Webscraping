@@ -53,7 +53,7 @@ try:
 
         print("Worker done, going back to sleep...")
 
-        time.sleep(5)
+        time.sleep(30)
 
 except Error as e:
     tool.roll_back(mysql_connection, e)
