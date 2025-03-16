@@ -3,9 +3,9 @@ from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
-user = os.getenv("user")
-host = os.getenv("host")
-password = os.getenv("password")
+user = os.getenv("USER")
+host = os.getenv("HOST")
+password = os.getenv("PASSWORD")
 
 # Path to the sql directory
 sql_path = "/Users/jessie/Desktop/project/Webscraping/dependency-creator/sql"
