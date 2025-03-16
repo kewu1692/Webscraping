@@ -2,6 +2,7 @@ import mysql_toolbox as tool
 import config
 from mysql.connector import Error
 import time
+import asyncio
 
 # find new res users
 def find_new_res_users(cursor,replace_map):
@@ -34,29 +35,24 @@ def set_up_new_res(cursor,replace_map):
         print("Error Setting Up New Res:", e)
     #### race condition
 
-def user_database_worker():
+async def user_database_worker(worker_id):
     try:
-        conn, cursor = None, None
+        mysql_connection, cursor = None, None
         while True:
-
-            print("Worker polling...")
+            print(f"Worker {worker_id} polling...")
             # create connection
             mysql_connection = tool.create_connection(config.HOST, config.USER, config.PASSWORD)
-
             # create cursor
             cursor = mysql_connection.cursor()
-
             # working
             db_replace_map = {"DB_NAME": config.GLOBAL}
             set_up_new_res(cursor,db_replace_map)
-
             mysql_connection.commit()
-
-            print("Worker done, going back to sleep...")
-
-            time.sleep(30)
+            print(f"Worker {worker_id} done, going back to sleep...")
+            await asyncio.sleep(5)
 
     except Error as e:
+        print(f"Error in worker {worker_id}: {e}")
         tool.roll_back(mysql_connection, e)
 
     finally:
