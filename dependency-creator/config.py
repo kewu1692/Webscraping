@@ -38,4 +38,4 @@ RES_DIR = os.path.join(SQL_PATH, "res")
 REVIEWS_PATH = os.path.join(RES_DIR, "reviews.sql")
 
 # Global database name
-GLOBAL = "global_database"
+GLOBAL_DB_NAME = "global_database"

@@ -20,10 +20,10 @@ def set_up_new_res(cursor,replace_map):
     try:
         rests = find_new_res_users(cursor,replace_map)
         for id, res in rests:
-            res_db_replace_map = {"DB_NAME": f"{res}"}
+            res_db_replace_map = {"GLOBAL_DB_NAME": f"{res}"}
             tool.execute_query_from_path(cursor,config.CREATE_DB_PATH,res_db_replace_map)
             print(f"Database created for {res}")
-            res_name_replace_map = {"RES_NAME": f"{res}"}
+            res_name_replace_map = {"RES_DB_NAME": f"{res}"}
             tool.execute_query_from_path(cursor,config.REVIEWS_PATH,res_name_replace_map)
             print(f"Review table created for {res}")
             id_replace_map = {"RES_ID": id }  
@@ -45,7 +45,7 @@ async def user_database_worker(worker_id):
             # create cursor
             cursor = mysql_connection.cursor()
             # working
-            db_replace_map = {"DB_NAME": config.GLOBAL}
+            db_replace_map = {"GLOBAL_DB_NAME": config.GLOBAL_DB_NAME}
             set_up_new_res(cursor,db_replace_map)
             mysql_connection.commit()
 

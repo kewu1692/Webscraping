@@ -14,7 +14,7 @@ def initialize_database():
         # TODO: replace GLOBAL with a more descriptive name like "GLOBAL_DATABASE_NAME"
         # TODO: replace DB_NAME with a more descriptive name like "GLOBAL_DATABASE_NAME"
         # TODO: replace create_db.sql to a more descriptive name like "create_global_db.sql"
-        db_replace_map = {"DB_NAME": config.GLOBAL}
+        db_replace_map = {"GLOBAL_DB_NAME": config.GLOBAL_DB_NAME}
         # TODO: think about future scaling of the project, is this the only database we will need?
         tool.execute_query_from_path(cursor,config.CREATE_DB_PATH,db_replace_map)
 
