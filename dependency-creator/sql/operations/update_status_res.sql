@@ -1,5 +1,5 @@
 UPDATE
-    < DB_NAME >.res_queue
+    < GLOBAL_DB_NAME >.res_queue
 SET
     status = "old"
 WHERE

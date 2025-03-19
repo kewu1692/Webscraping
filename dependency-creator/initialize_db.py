@@ -11,12 +11,9 @@ def initialize_database():
         cursor = mysql_connection.cursor()
 
         # initialize global db
-        # TODO: replace GLOBAL with a more descriptive name like "GLOBAL_DATABASE_NAME"
-        # TODO: replace DB_NAME with a more descriptive name like "GLOBAL_DATABASE_NAME"
-        # TODO: replace create_db.sql to a more descriptive name like "create_global_db.sql"
         db_replace_map = {"GLOBAL_DB_NAME": config.GLOBAL_DB_NAME}
         # TODO: think about future scaling of the project, is this the only database we will need?
-        tool.execute_query_from_path(cursor,config.CREATE_DB_PATH,db_replace_map)
+        tool.execute_queries_in_directory(cursor,config.INIT_DB_DIR,db_replace_map)
 
         # initialize tables
         tool.execute_queries_in_directory(cursor,config.INIT_TABLES_DIR,db_replace_map)
