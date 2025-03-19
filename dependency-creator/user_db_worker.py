@@ -4,7 +4,7 @@ from mysql.connector import Error
 import time
 import asyncio
 
-# find new res users
+# find new res users create jobs
 def find_new_res_users(cursor,replace_map):
     try:
         print("Finding new restaurants...")
@@ -48,6 +48,17 @@ async def user_database_worker(worker_id):
             db_replace_map = {"DB_NAME": config.GLOBAL}
             set_up_new_res(cursor,db_replace_map)
             mysql_connection.commit()
+
+            # START TRANSACTION
+            # TODO: create function called that finds 1 new job, this should lock the row it found
+            # TODO: create function that updates the job status to processing
+            # END TRANSACTION
+
+            # TODO: create function that processes the job, create the artifacts
+            # START TRANSACTION
+            # TODO: create function that updates the job status to done/error, test the error case
+            # END TRANSACTION
+
             print(f"Worker {worker_id} done, going back to sleep...")
             await asyncio.sleep(5)
 
