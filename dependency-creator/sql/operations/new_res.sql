@@ -1,9 +1,12 @@
 SELECT
-    res_id, res_name
+    res_id,
+    res_name
 FROM
     < GLOBAL_DB_NAME >.res_queue
 WHERE
     status = 'new'
-
-    -- select only one row from the table while sorted by created_at and this should be block for other transactions
-    
+ORDER BY
+    created_at
+LIMIT
+    1 FOR
+UPDATE;
