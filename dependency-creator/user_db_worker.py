@@ -1,39 +1,46 @@
 import mysql_toolbox as tool
 import config
 from mysql.connector import Error
-import time
 import asyncio
 
-# find new res users create jobs
-def find_new_res_users(cursor,replace_map):
+# find new job
+def find_new_res_job(cursor):
     try:
-        print("Finding new restaurants...")
-        tool.execute_query_from_path(cursor, config.NEW_RES_PATH, replace_map)
-        rests_list = cursor.fetchall()
-        print(f"New restaurants found: {rests_list}")
-        return rests_list
+        print("Finding new job...")
+        cursor.execute(f"""SELECT res_id, res_name FROM {config.GLOBAL_DB_NAME}.res_queue WHERE status = 'new' ORDER BY created_at LIMIT 1 FOR UPDATE""")
+        rest = cursor.fetchall()
+        if not rest:
+            print("No new job found.")
+            return None
+        print(f"New job found: {rest}")
+        cursor.execute(f"""UPDATE {config.GLOBAL_DB_NAME}.res_queue SET status = "in progress" WHERE res_id = {rest[0][0]}""")
+        return rest
     except Error as e:
         print("Error Finding New Res:", e)
     
 # create db and review table for new res users
-def set_up_new_res(cursor,replace_map):
+def set_up_new_res_artifacts(cursor):
     try:
-        rests = find_new_res_users(cursor,replace_map)
-        for id, res in rests:
+        rest = find_new_res_job(cursor)
+        if not rest:
+            print("No new job found.")
+            return None
+        print(f"Setting up the artifacts for {rest[0][1]}")
+        for id, res in rest:
             res_db_replace_map = {"GLOBAL_DB_NAME": f"{res}"}
             tool.execute_query_from_path(cursor,config.CREATE_DB_PATH,res_db_replace_map)
             print(f"Database created for {res}")
             res_name_replace_map = {"RES_DB_NAME": f"{res}"}
             tool.execute_query_from_path(cursor,config.REVIEWS_PATH,res_name_replace_map)
             print(f"Review table created for {res}")
-            id_replace_map = {"RES_ID": id }  
-            update_replace_map = replace_map | id_replace_map
-            tool.execute_query_from_path(cursor,config.UPDATE_STATUS_PATH,update_replace_map)
-            print(f"Status changed for {id}")
+            cursor.execute(f"""UPDATE {config.GLOBAL_DB_NAME}.res_queue SET status = "done" WHERE res_id = {id}""")
 
     except Error as e:
         print("Error Setting Up New Res:", e)
+        cursor.execute(f"""UPDATE {config.GLOBAL_DB_NAME}.res_queue SET status = "error" WHERE res_id = {id}""")
+
     #### race condition
+
 
 async def user_database_worker(worker_id):
     try:
@@ -45,8 +52,7 @@ async def user_database_worker(worker_id):
             # create cursor
             cursor = mysql_connection.cursor()
             # working
-            db_replace_map = {"GLOBAL_DB_NAME": config.GLOBAL_DB_NAME}
-            set_up_new_res(cursor,db_replace_map)
+            set_up_new_res_artifacts(cursor)
             mysql_connection.commit()
 
             # START TRANSACTION
