@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS < RES_NAME >.reviews (
+CREATE TABLE IF NOT EXISTS < RES_DB_NAME >.reviews (
     review_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT,
     rev_date DATE,
