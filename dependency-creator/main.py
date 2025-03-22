@@ -9,9 +9,12 @@ import asyncio
 async def main():
     try:
         drop_all_databases()
+        print("#"*50)
         initialize_database()
+        print("#"*50)
         insert_testing_data()
-        num_workers = 1
+        print("#"*50)
+        num_workers = 2
         tasks = []
         for i in range(num_workers):
             task = asyncio.create_task(user_database_worker(i))  # Pass worker id to distinguish workers
