@@ -1,12 +1,10 @@
 import mysql.connector
 import os
-from mysql.connector import Error
 import re
 
 # create MySQL connection
 def create_connection(host, user, password):
     try:
-        print("Connecting to MySQL")
         mysql_connection = mysql.connector.connect(
             host=host,
             user=user,
@@ -52,7 +50,6 @@ def execute_query_with_replace(cursor, query, replace_map):
 # validate_replace_by_query takes query and dict and validates if the dict is good
 def validate_replace_by_query(query, replace_map):
     try:
-        print("Validating input...")
         if not isinstance(query, str):
             raise TypeError(f"Expected string, got {type(query).__name__}")
         if not isinstance(replace_map, dict):
@@ -99,7 +96,7 @@ def execute_query_from_path(cursor, file_path, replace_map):
         query = read_query_from_path(file_path)
         validation_result = validate_replace_by_query(query, replace_map)
         if validation_result:
-                    execute_query_with_replace(cursor, query, replace_map)
+            execute_query_with_replace(cursor, query, replace_map)
         else:
             raise ValueError("Invalid query.")
     except Exception as e:
@@ -113,7 +110,7 @@ def roll_back(mysql_connection, error):
         if mysql_connection:
             mysql_connection.rollback()  # Rollback changes on error
             print("Transaction rolled back.")
-    except Error as e:
+    except Exception as e:
         print("Error rolling back:", e)
         raise e
 
@@ -125,6 +122,6 @@ def close(cursor, mysql_connection):
         if mysql_connection:
             mysql_connection.close()
         print("Database connection closed.")
-    except Error as e:
+    except Exception as e:
         print("Error closing connection:", e)
         raise e
