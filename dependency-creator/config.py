@@ -17,7 +17,7 @@ INIT_DIR = os.path.join(SQL_PATH, "initialization/global")
 INIT_DB_DIR = os.path.join(INIT_DIR, "db")
 
 # Path to the create_db.sql file
-CREATE_DB_PATH = os.path.join(INIT_DB_DIR, "create_global_db.sql")
+CREATE_GLOBAL_DB_PATH = os.path.join(INIT_DB_DIR, "create_global_db.sql")
 
 # Path to the initialization tables directory
 INIT_TABLES_DIR = os.path.join(INIT_DIR, "tables")
