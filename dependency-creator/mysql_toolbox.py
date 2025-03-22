@@ -14,13 +14,15 @@ def create_connection(host, user, password):
             )
         print("Connected to MySQL")
         return mysql_connection
-    except Error as e:
+    except Exception as e:
         if e.errno == 1045:  # MySQL access denied error
             print("Login Error: Incorrect username or password.")
         elif e.errno == 2003:  # Can't connect to MySQL server
             print("Login Error: Unable to connect to MySQL server. Check host and port.")
         else:
             print("Error connecting to MySQL:", e)
+        raise e
+        
 
 
 # read_query_from_path reads sql query from a given path
@@ -30,8 +32,9 @@ def read_query_from_path(file_path):
             print(f"Reading from {os.path.basename(file_path)}")
             return file.read()
             
-    except Error as e:
+    except Exception as e:
         print("Error reading sql:", e)
+        raise e
 
 # execute_query_with_replace takes and executes query with assumed valid replacement dict
 def execute_query_with_replace(cursor, query, replace_map):
@@ -42,17 +45,14 @@ def execute_query_with_replace(cursor, query, replace_map):
         cursor.execute(query)
         print("Query executed.")
 
-    except Error as e:
+    except Exception as e:
         print("Error executing sql:", e)
+        raise e
 
 # validate_replace_by_query takes query and dict and validates if the dict is good
 def validate_replace_by_query(query, replace_map):
     try:
         print("Validating input...")
-        if not query:
-            raise ValueError("Query is empty.")
-        if not replace_map:
-            raise ValueError("Replacement map is empty.")
         if not isinstance(query, str):
             raise TypeError(f"Expected string, got {type(query).__name__}")
         if not isinstance(replace_map, dict):
@@ -68,9 +68,10 @@ def validate_replace_by_query(query, replace_map):
         else:
             print("Valid replace.")
             return True
-    except (ValueError, TypeError) as e:
+    except Exception as e:
         print(f"Validation Error: {e}")
-
+        raise e
+    
 # execute_queries_in_dir takes path of dir,loop through files and get file path, read each query, check replacement, execute query
 def execute_queries_in_directory(cursor, directory, replace_map):
     try:
@@ -82,11 +83,14 @@ def execute_queries_in_directory(cursor, directory, replace_map):
                 validation_result = validate_replace_by_query(query, replace_map)
                 if validation_result:
                     execute_query_with_replace(cursor, query, replace_map)
+                else:
+                    raise ValueError("Invalid query.")
             else:
                 print("Directory contains non-file objects. Fail to execute due to invalid directory.")
         print("All queries executed.")
-    except Error as e:
+    except Exception as e:
         print("Error executing sql:", e)
+        raise e
             
 
 # execute_query_from_path takes path of a file, read query, check replacement, execute query
@@ -96,8 +100,11 @@ def execute_query_from_path(cursor, file_path, replace_map):
         validation_result = validate_replace_by_query(query, replace_map)
         if validation_result:
                     execute_query_with_replace(cursor, query, replace_map)
-    except Error as e:
+        else:
+            raise ValueError("Invalid query.")
+    except Exception as e:
         print("Error executing sql:", e)
+        raise e
 
 # roll back
 def roll_back(mysql_connection, error):
@@ -108,6 +115,7 @@ def roll_back(mysql_connection, error):
             print("Transaction rolled back.")
     except Error as e:
         print("Error rolling back:", e)
+        raise e
 
 # closing connection
 def close(cursor, mysql_connection):
@@ -119,3 +127,4 @@ def close(cursor, mysql_connection):
         print("Database connection closed.")
     except Error as e:
         print("Error closing connection:", e)
+        raise e

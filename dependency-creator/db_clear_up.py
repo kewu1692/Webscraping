@@ -6,6 +6,8 @@ import mysql_toolbox as tool
 
 # create connection
 def drop_all_databases():
+
+    cursor, mysql_connection = None, None
     try:
         # create connection
         mysql_connection = tool.create_connection(config.HOST, config.USER, config.PASSWORD)
@@ -33,6 +35,7 @@ def drop_all_databases():
         if mysql_connection:
             mysql_connection.rollback()  # Rollback changes on error
             print("Transaction rolled back.")
+        raise e
 
     finally:
         if cursor:

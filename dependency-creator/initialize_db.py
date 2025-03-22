@@ -22,8 +22,9 @@ def initialize_database():
         mysql_connection.commit()
         print("Initialization complete.")
 
-    except Error as error:
-        tool.roll_back(mysql_connection, error)
+    except Exception as e:
+        tool.roll_back(mysql_connection, e)
+        raise e
 
     finally:
         tool.close(cursor, mysql_connection)

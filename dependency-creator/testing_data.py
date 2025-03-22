@@ -9,7 +9,10 @@ def insert_testing_data():
         mysql_connection = tool.create_connection(config.HOST, config.USER, config.PASSWORD)
 
         # create cursor
-        cursor = mysql_connection.cursor()
+        if mysql_connection:
+            cursor = mysql_connection.cursor()
+        else:
+            raise Error("No connection to MySQL")
 
         # create variables
         res_name1 = "test1"
@@ -27,11 +30,12 @@ def insert_testing_data():
         mysql_connection.commit()
         print("Testing data inserted.")
 
-    except Error as e:
+    except Exception as e:
         print(f"Error: {e}")
         if mysql_connection:
             mysql_connection.rollback()  # Rollback changes on error
             print("Transaction rolled back.")
+        raise e
 
     finally:
         if cursor:
