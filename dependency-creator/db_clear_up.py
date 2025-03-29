@@ -5,7 +5,7 @@ import mysql_toolbox as tool
 
 
 # create connection
-def drop_all_databases():
+def drop_all_test_databases():
 
     cursor, mysql_connection = None, None
     try:

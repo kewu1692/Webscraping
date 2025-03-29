@@ -1,4 +1,4 @@
-from db_clear_up import drop_all_databases
+from db_clear_up import drop_all_test_databases
 from initialize_db import initialize_database
 from testing_data import insert_testing_data
 from user_db_worker import user_database_worker
@@ -8,10 +8,12 @@ import asyncio
 
 async def main():
     try:
-        drop_all_databases()
+        # TODO: rewrite drop_all_databases to drop all "test" databases
+        drop_all_test_databases()
         print("#"*50)
         initialize_database()
         print("#"*50)
+        # TODO: parameterize the number of testing data to insert(the number of test databases)
         insert_testing_data()
         print("#"*50)
         num_workers = 2
