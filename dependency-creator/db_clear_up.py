@@ -16,14 +16,14 @@ def drop_all_test_databases():
         cursor = mysql_connection.cursor()
 
         # clear up before testing
-        drop_queries = [
-            "DROP DATABASE IF EXISTS test1;",
-            "DROP DATABASE IF EXISTS test2;",
-            "DROP DATABASE IF EXISTS global_database;"
-        ]
+        cursor.execute("SHOW DATABASES;")
+        databases = cursor.fetchall()
+        num_databases = len(databases)
+
+        for i in range(num_databases):
+            cursor.execute(f"DROP DATABASE IF EXISTS test{i};") 
         
-        for query in drop_queries:
-            cursor.execute(query) 
+        cursor.execute("DROP DATABASE IF EXISTS global_database;")
             
         # commit changes
         mysql_connection.commit()
