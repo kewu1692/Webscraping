@@ -3,7 +3,7 @@ import config
 from mysql.connector import Error
 import asyncio
 import time
-s
+
 # find new job
 def find_new_res_job(mysql_connection,cursor):
     try:   
