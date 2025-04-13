@@ -8,13 +8,11 @@ import asyncio
 
 async def main():
     try:
-        # TODO: rewrite drop_all_databases to drop all "test" databases
         drop_all_test_databases()
         print("#"*50)
         initialize_database()
         print("#"*50)
-        # TODO: parameterize the number of testing data to insert(the number of test databases)
-        insert_testing_data()
+        insert_testing_data(number_of_testing_data=10)
         print("#"*50)
         num_workers = 2
         tasks = []
