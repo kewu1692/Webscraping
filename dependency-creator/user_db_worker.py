@@ -3,9 +3,9 @@ import config
 from mysql.connector import Error
 import asyncio
 import time
-
+s
 # find new job
-def find_new_res_job(cursor):
+def find_new_res_job(mysql_connection,cursor):
     try:   
         print("Finding new job...")
         cursor.execute(f"""SELECT res_id, res_name FROM {config.GLOBAL_DB_NAME}.res_queue WHERE status = 'new' ORDER BY created_at LIMIT 1 FOR UPDATE""")
@@ -15,6 +15,7 @@ def find_new_res_job(cursor):
             return None
         print(f"New job found: {rest}")
         cursor.execute(f"""UPDATE {config.GLOBAL_DB_NAME}.res_queue SET status = "in progress" WHERE res_id = {rest[0][0]}""")
+        mysql_connection.commit()
         return rest
     except Exception as e:
         print("Error Finding New Res:", e)
@@ -23,10 +24,10 @@ def find_new_res_job(cursor):
 # create db and review table for new res users
 def set_up_new_res_artifacts(mysql_connection, cursor):
     try:
-        rest = find_new_res_job(cursor)
+        rest = find_new_res_job(mysql_connection,cursor)
         if not rest:
-            print("No new job found.")
             return None
+        time.sleep(5)
         print(f"Setting up artifacts for {rest[0][1]}")
         for id, res in rest:
             res_db_replace_map = {"GLOBAL_DB_NAME": f"{res}"}
