@@ -16,18 +16,18 @@ async def drop_all_test_databases():
         cursor = await async_mysql_connection.cursor()
 
         # clear up before testing
-        await cursor.execute("SHOW DATABASES;")
+        await cursor.execute("SELECT schema_name FROM information_schema.schemata WHERE schema_name NOT IN ('information_schema', 'mysql', 'performance_schema', 'sys');")
         databases = await cursor.fetchall()
-        filtered_databases = [db[0] for db in databases if db[0] not in ('information_schema', 'mysql', 'performance_schema')]
-        print(f"Databases: {filtered_databases}")
-        num_databases = len(filtered_databases)
+        # filtered_databases = [db[0] for db in databases if db[0] not in ('information_schema', 'mysql', 'performance_schema')]
+        print(f"Databases: {databases}")
+        num_databases = len(databases)
 
 
         if num_databases == 0:
             print("No databases found.")
-            return False
+            return False                                                                                                                                           
         else:
-            for i in range(num_databases):
+            for i in range(num_databases-1):
                 await cursor.execute(f"DROP DATABASE IF EXISTS test{i};") 
         
         await cursor.execute("DROP DATABASE IF EXISTS global_database;")
