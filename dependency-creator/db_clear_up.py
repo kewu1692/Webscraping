@@ -1,46 +1,51 @@
 from mysql.connector import Error
 import config
 import mysql_toolbox as tool
-
+import asyncio
 
 
 # create connection
-def drop_all_test_databases():
+async def drop_all_test_databases():
 
-    cursor, mysql_connection = None, None
+    cursor, async_mysql_connection = None, None
     try:
         # create connection
-        mysql_connection = tool.create_connection(config.HOST, config.USER, config.PASSWORD)
+        async_mysql_connection = await tool.create_async_connection(config.HOST, config.USER, config.PASSWORD)
 
         # create cursor
-        cursor = mysql_connection.cursor()
+        cursor = await async_mysql_connection.cursor()
 
         # clear up before testing
-        cursor.execute("SHOW DATABASES;")
-        databases = cursor.fetchall()
+        await cursor.execute("SELECT schema_name FROM information_schema.schemata WHERE schema_name NOT IN ('information_schema', 'mysql', 'performance_schema', 'sys');")
+        databases = await cursor.fetchall()
+        # filtered_databases = [db[0] for db in databases if db[0] not in ('information_schema', 'mysql', 'performance_schema')]
+        print(f"Databases: {databases}")
         num_databases = len(databases)
 
-        for i in range(num_databases):
-            cursor.execute(f"DROP DATABASE IF EXISTS test{i};") 
+
+        if num_databases == 0:
+            print("No databases found.")
+            return False                                                                                                                                           
+        else:
+            for i in range(num_databases-1):
+                await cursor.execute(f"DROP DATABASE IF EXISTS test{i};") 
         
-        cursor.execute("DROP DATABASE IF EXISTS global_database;")
+        await cursor.execute("DROP DATABASE IF EXISTS global_database;")
             
         # commit changes
-        mysql_connection.commit()
+        await async_mysql_connection.commit()
         
         print("Database Cleared.")
 
     except Error as e:
         print(f"Error: {e}")
-        if mysql_connection:
-            mysql_connection.rollback()  # Rollback changes on error
+        if async_mysql_connection:
+            await async_mysql_connection.rollback()  # Rollback changes on error
             print("Transaction rolled back.")
         raise e
 
     finally:
-        if cursor:
-            cursor.close()
-        if mysql_connection:
-            mysql_connection.close()
-        print("Database connection closed.")
+        if cursor and async_mysql_connection:
+            await tool.close(cursor, async_mysql_connection)
 
+asyncio.run(drop_all_test_databases())
