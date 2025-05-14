@@ -25,7 +25,7 @@ async def drop_all_test_databases():
 
         if num_databases == 0:
             print("No databases found.")
-            return False                                                                                                                                           
+            return                                                                                                                                           
         else:
             for i in range(num_databases-1):
                 await cursor.execute(f"DROP DATABASE IF EXISTS test{i};") 
