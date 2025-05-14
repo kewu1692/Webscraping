@@ -2,6 +2,7 @@ from mysql.connector import Error
 import config
 import mysql_toolbox as tool
 
+
 async def initialize_database():
     async_mysql_connection = cursor = None
     try:
@@ -31,3 +32,4 @@ async def initialize_database():
     finally:        
         if cursor and async_mysql_connection:
             await tool.close(cursor, async_mysql_connection)
+
