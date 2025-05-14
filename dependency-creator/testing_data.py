@@ -1,6 +1,7 @@
 from mysql.connector import Error
 import config
 import mysql_toolbox as tool
+import asyncio
 
 # create connection
 async def insert_testing_data(number_of_testing_data):
@@ -20,7 +21,7 @@ async def insert_testing_data(number_of_testing_data):
             res_url = f"https://www.test{i}.com"
 
             # execute query
-            await cursor.execute(f"INSERT INTO global_database.res_queue(res_name, status, res_url) VALUES ('{res_name}', '{status}', '{res_url}')")
+            await cursor.execute(f"INSERT INTO {config.GLOBAL_DB_NAME}.res_queue(res_name, status, res_url) VALUES ('{res_name}', '{status}', '{res_url}')")
     
         # commit changes
         await async_mysql_connection.commit()
