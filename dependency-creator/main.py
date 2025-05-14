@@ -1,7 +1,7 @@
 from db_clear_up import drop_all_test_databases
 from initialize_db import initialize_database
 from testing_data import insert_testing_data
-from user_db_worker import user_database_worker
+from user_db_worker import dependency_creation_worker
 
 # use logging library to log, info, error, debug
 import asyncio
@@ -14,13 +14,13 @@ async def main():
         await initialize_database()
         print("#"*50)
 
-        await insert_testing_data(number_of_testing_data=10)
+        await insert_testing_data(number_of_testing_data=20)
         print("#"*50)
         
-        num_workers = 5
+        num_workers = 3
         tasks = []
         for i in range(num_workers):
-            task = asyncio.create_task(user_database_worker(i))  # Pass worker id to distinguish workers
+            task = asyncio.create_task(dependency_creation_worker(i))  # Pass worker id to distinguish workers
             tasks.append(task)
             
         await asyncio.gather(*tasks)
