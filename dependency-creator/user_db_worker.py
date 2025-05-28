@@ -13,7 +13,7 @@ async def find_new_res_job(async_mysql_connection,cursor):
             return
         print(f"New job found: {rest}")
 
-        await cursor.execute(f"""UPDATE {config.GLOBAL_DB_NAME}.res_queue SET status = "in progress" WHERE res_id = {rest[0][0]}""")
+        await cursor.execute(f"""UPDATE {config.GLOBAL_DB_NAME}.res_queue SET status = "in_progress" WHERE res_id = {rest[0][0]}""")
         await async_mysql_connection.commit()
         return rest
     except Exception as e:
@@ -31,12 +31,14 @@ async def set_up_new_res_artifacts(async_mysql_connection, cursor):
 
         for id, res in rest:
             res_db_replace_map = {"RES_DB_NAME": f"{res}"}
-            await tool.execute_query_from_path(cursor,config.RES_DB_PATH,res_db_replace_map)
+            await tool.execute_queries_in_directory(cursor,config.RES_DB_DIR,res_db_replace_map)
             print(f"Database created for {res}")
 
             res_name_replace_map = {"RES_DB_NAME": f"{res}"}
-            await tool.execute_query_from_path(cursor,config.REVIEWS_PATH,res_name_replace_map)
+            await tool.execute_queries_in_directory(cursor,config.RES_TABLES_DIR,res_name_replace_map)
             print(f"Review table created for {res}")
+            
+            raise Exception("Simulating an error for testing purposes")  # Simulating an error to test rollback
 
             await cursor.execute(f"""UPDATE {config.GLOBAL_DB_NAME}.res_queue SET status = "done" WHERE res_id = {id}""")
             await async_mysql_connection.commit()
