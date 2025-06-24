@@ -9,6 +9,7 @@ import config
 import asyncio
 
 async def main():
+    pool = None
     try:
         pool = await create_async_connection_pool(config.HOST, config.USER, config.PASSWORD)
 
