@@ -23,15 +23,20 @@ import re
 #         raise e
         
 # create async MySQL connection
-async def create_async_connection(host, user, password):
+async def create_async_connection_pool(host, user, password):
     try:
-        async_mysql_connection = await aiomysql.connect(
+        # async_mysql_connection = await aiomysql.connect(
+        #     host=host,
+        #     user=user,
+        #     password=password
+        # )
+        pool = await aiomysql.create_pool(
             host=host,
             user=user,
             password=password
         )
-        print("Connected to MySQL asynchronously")
-        return async_mysql_connection
+        print("Connected to MySQL")
+        return pool
     except Exception as e:
         err_no = getattr(e, 'errno', None)
         if err_no == 1045:  # MySQL access denied error
@@ -129,23 +134,33 @@ async def execute_query_from_path(cursor, file_path, replace_map):
         raise e
 
 # roll back
-async def roll_back(async_mysql_connection, error):
+async def roll_back(conn, error):
     try:
         print(f"Error: {error}")
-        if async_mysql_connection:
-            await async_mysql_connection.rollback()  # Rollback changes on error
+        if conn:
+            await conn.rollback()  # Rollback changes on error
             print("Transaction rolled back.")
     except Exception as e:
         print("Error rolling back:", e)
         raise e
+    
+# release connection
+async def release(pool, conn):
+    try:
+        if conn:
+            await pool.release(conn)
+            print("Connection released.")
+    except Exception as e:
+        print("Error releasing connection:", e)
+        raise e
 
 # closing connection
-async def close(cursor, async_mysql_connection):
+async def close(cursor, conn):
     try:
         if cursor:
             await cursor.close()
-        if async_mysql_connection:
-            async_mysql_connection.close()
+        if conn:
+            conn.close()
         print("Database connection closed.")
     except Exception as e:
         print("Error closing connection:", e)
