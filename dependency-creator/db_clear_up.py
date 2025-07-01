@@ -6,7 +6,6 @@ import asyncio
 # create connection
 async def drop_all_test_databases(pool):
 
-    cursor, conn = None, None
     try:
         # create connection and cursor
         async with pool.acquire() as conn:
@@ -32,11 +31,11 @@ async def drop_all_test_databases(pool):
 
     except Error as e:
         print(f"Error: {e}")
-        if conn:
-            await conn.rollback()  # Rollback changes on error
-            print("Transaction rolled back.")
+        # if conn:
+            # await conn.rollback()  # Rollback changes on error
+            # print("Transaction rolled back.")
+        # Note: conn is not accessible here since it's scoped to the async with block
+        # The connection will be automatically returned to pool even on exception
         raise e
-
-    finally:
-        if cursor and conn:
-            await tool.release(pool, conn)
+    # we don't need the finally block here since the async with block handles closing the connection
+    # and cursor automatically
