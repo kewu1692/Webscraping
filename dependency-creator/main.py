@@ -10,7 +10,7 @@ import asyncio
 
 async def main():
     pool = None
-    try:
+    try:    
         pool = await create_async_connection_pool(config.HOST, config.USER, config.PASSWORD)
 
         await drop_all_test_databases(pool)
