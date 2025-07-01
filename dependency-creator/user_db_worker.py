@@ -48,6 +48,8 @@ async def set_up_new_res_artifacts(conn, cursor):
             await cursor.execute(update_query, ("done", id))
             print(f"Updated status to done for {res}")
 
+            
+
     except Exception as e:
         print(f"Error setting up artifacts: {e}")
         if rest:
@@ -88,5 +90,4 @@ async def dependency_creation_worker(pool,worker_id):
 
     except Exception as e:
         print(f"Fatal error in worker {worker_id}: {e}")
-        # Worker will exit - you might want to restart it depending on your needs
         raise e
