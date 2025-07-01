@@ -48,8 +48,6 @@ async def set_up_new_res_artifacts(conn, cursor):
             await cursor.execute(update_query, ("done", id))
             print(f"Updated status to done for {res}")
 
-            
-
     except Exception as e:
         print(f"Error setting up artifacts: {e}")
         if rest:
@@ -62,8 +60,6 @@ async def set_up_new_res_artifacts(conn, cursor):
                 print(f"Error during cleanup: {cleanup_error}")
         raise e
     
-
-
 async def dependency_creation_worker(pool,worker_id):
     try:
         while True:
