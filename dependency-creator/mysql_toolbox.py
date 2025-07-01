@@ -25,15 +25,13 @@ import re
 # create async MySQL connection
 async def create_async_connection_pool(host, user, password):
     try:
-        # async_mysql_connection = await aiomysql.connect(
-        #     host=host,
-        #     user=user,
-        #     password=password
-        # )
         pool = await aiomysql.create_pool(
             host=host,
             user=user,
-            password=password
+            password=password,
+            minsize=1,
+            maxsize=10,  # Adjust based on your needs
+            autocommit=False  # Explicit transaction control
         )
         print("Connected to MySQL")
         return pool
@@ -56,7 +54,6 @@ def read_query_from_path(file_path):
         with open(file_path, 'r') as file:
             print(f"Reading from {os.path.basename(file_path)}")
             return file.read()
-            
     except Exception as e:
         print("Error reading sql:", e)
         raise e
@@ -69,7 +66,6 @@ async def execute_query_with_replace(cursor, query, replace_map):
             print(f"Replaced {k} with {v}")
         await cursor.execute(query)
         print("Query executed.")
-
     except Exception as e:
         print("Error executing sql:", e)
         raise e
@@ -118,7 +114,6 @@ async def execute_queries_in_directory(cursor, directory, replace_map):
     except Exception as e:
         print("Error executing sql:", e)
         raise e
-            
 
 # execute_query_from_path takes path of a file, read query, check replacement, execute query
 async def execute_query_from_path(cursor, file_path, replace_map):
@@ -138,30 +133,38 @@ async def roll_back(conn, error):
     try:
         print(f"Error: {error}")
         if conn:
-            await conn.rollback()  # Rollback changes on error
+            await conn.rollback()
             print("Transaction rolled back.")
     except Exception as e:
         print("Error rolling back:", e)
         raise e
     
-# release connection
-async def release(pool, conn):
-    try:
-        if conn:
-            await pool.release(conn)
-            print("Connection released.")
-    except Exception as e:
-        print("Error releasing connection:", e)
-        raise e
+# # release connection
+# async def release(pool, conn):
+#     try:
+#         if conn:
+#             await pool.release(conn)
+#             print("Connection released.")
+#     except Exception as e:
+#         print("Error releasing connection:", e)
+#         raise e
 
-# closing connection
-async def close(cursor, conn):
-    try:
-        if cursor:
-            await cursor.close()
-        if conn:
-            conn.close()
-        print("Database connection closed.")
-    except Exception as e:
-        print("Error closing connection:", e)
-        raise e
+# # closing connection
+# async def close(cursor, conn):
+#     try:
+#         if cursor:
+#             await cursor.close()
+#         if conn:
+#             conn.close()
+#         print("Database connection closed.")
+#     except Exception as e:
+#         print("Error closing connection:", e)
+#         raise e
+    
+
+# REMOVED: release() function - not needed with aiomysql pools
+# The async with pool.acquire() context manager handles connection release automatically
+
+# REMOVED: close() function for individual connections
+# When using pools, individual connections should not be manually closed
+# The pool manages connection lifecycle
