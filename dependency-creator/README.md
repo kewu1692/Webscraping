@@ -24,6 +24,8 @@ This project implements an asynchronous MySQL-based system that:
 
 - Python 3.7+
 - MySQL Server 5.7+ or 8.0+
+- Docker (for database setup)
+- DeBeaver for database management (optional)
 - Required Python packages (see [Installation](#installation))
 
 ## Installation
@@ -44,52 +46,20 @@ This project implements an asynchronous MySQL-based system that:
    ```bash
    pip install -r requirements.txt
    ```
+   
+4. **Database setup:**
+   Docker and Docker Compose installed
+   ```bash
+   # Clone the repository
+   git clone your-repo-url
+   cd your-project
 
-## Database Setup
+   # Start the database
+   docker-compose up -d
 
-### Prerequisites
-- Docker installed on your system
-- DBeaver (or any SQL client)
-
-### Running the Database
-```bash
-# Start MySQL container
-docker run -d \
-  --name project-db \
-  -e MYSQL_ROOT_PASSWORD=yourpassword \
-  -e MYSQL_DATABASE=projectdb \
-  -p 3306:3306 \
-  mysql:8.0
-
-# Verify container is running
-docker ps
-```
-
-## Configuration
-
-Create a `config.py` file with your database settings:
-
-```python
-# Database Configuration
-HOST = "localhost"
-USER = "your_username"
-PASSWORD = "your_password"
-GLOBAL_DB_NAME = "global_database"
-
-# Directory Paths for SQL Files
-INIT_DB_DIR = "./sql/init_db"
-INIT_TABLES_DIR = "./sql/init_tables"
-RES_DB_DIR = "./sql/res_db"
-RES_TABLES_DIR = "./sql/res_tables"
-```
-
-### Environment Variables (Optional)
-You can also use environment variables:
-```bash
-export MYSQL_HOST=localhost
-export MYSQL_USER=your_username
-export MYSQL_PASSWORD=your_password
-```
+   # Verify it's running
+   docker-compose ps
+   ```
 
 ## Usage
 
