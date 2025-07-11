@@ -8,7 +8,7 @@ HOST = os.getenv("host")
 PASSWORD = os.getenv("password")
 
 # Path to the sql directory
-SQL_PATH = "/Users/jessie/Desktop/project/Webscraping/dependency-creator/sql"
+SQL_PATH = "./sql"
 
 # Path to the initialization directory
 INIT_DIR = os.path.join(SQL_PATH, "initialization/global")

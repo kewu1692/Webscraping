@@ -29,7 +29,7 @@ async def set_up_new_res_artifacts(conn, cursor):
         rest = await find_new_res_job(conn,cursor)
         if not rest:
             return
-        await asyncio.sleep(5)
+        
         print(f"Setting up artifacts for {rest[0][1]}")
 
         for id, res in rest:
@@ -64,8 +64,7 @@ async def dependency_creation_worker(pool,worker_id):
     try:
         while True:
             print(f"Worker {worker_id} polling...")
-            await asyncio.sleep(5)
-
+            
             # create connection and cursor
             async with pool.acquire() as conn:
                 async with conn.cursor() as cursor:

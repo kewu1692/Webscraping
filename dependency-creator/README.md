@@ -24,7 +24,7 @@ This project implements an asynchronous MySQL-based system that:
 
 - Python 3.7+
 - MySQL Server 5.7+ or 8.0+
-- Docker (for database setup)
+- Docker (for database setup) + docker-compose
 - DeBeaver for database management (optional)
 - Required Python packages (see [Installation](#installation))
 
@@ -32,13 +32,13 @@ This project implements an asynchronous MySQL-based system that:
 
 1. **Clone the repository:**
    ```bash
-   git clone <repository-url>
-   cd mysql-async-worker-project
+   git clone git@github.com:kewu1692/Webscraping.git
+   cd Webscraping/dependency-creator
    ```
 
 2. **Create a virtual environment:**
    ```bash
-   python -m venv venv
+   python3 -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 
@@ -63,7 +63,7 @@ This project implements an asynchronous MySQL-based system that:
 
 1. **Run the main application:**
    ```bash
-   python main.py
+   python3 main.py
    ```
 
 2. **The application will:**
