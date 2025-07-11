@@ -46,18 +46,14 @@ This project implements an asynchronous MySQL-based system that:
    ```bash
    pip install -r requirements.txt
    ```
-   
+
 4. **Database setup:**
    Docker and Docker Compose installed
    ```bash
-   # Clone the repository
-   git clone your-repo-url
-   cd your-project
-
    # Start the database
    docker-compose up -d
 
-   # Verify it's running
+   # Verify the database is running
    docker-compose ps
    ```
 
