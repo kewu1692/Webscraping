@@ -45,10 +45,25 @@ This project implements an asynchronous MySQL-based system that:
    pip install -r requirements.txt
    ```
 
-4. **Set up MySQL database:**
-   - Ensure MySQL server is running
-   - Create a user with appropriate permissions
-   - Update configuration (see [Configuration](#configuration))
+## Database Setup
+
+### Prerequisites
+- Docker installed on your system
+- DBeaver (or any SQL client)
+
+### Running the Database
+```bash
+# Start MySQL container
+docker run -d \
+  --name project-db \
+  -e MYSQL_ROOT_PASSWORD=yourpassword \
+  -e MYSQL_DATABASE=projectdb \
+  -p 3306:3306 \
+  mysql:8.0
+
+# Verify container is running
+docker ps
+```
 
 ## Configuration
 
