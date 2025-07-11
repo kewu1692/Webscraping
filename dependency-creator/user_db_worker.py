@@ -6,7 +6,7 @@ import asyncio
 async def find_new_res_job(conn,cursor):
     try:
         print("Finding new job...")
-        query = f"""SELECT res_id, res_name FROM {config.GLOBAL_DB_NAME}.res_queue WHERE status = 'new' ORDER BY created_at LIMIT 1 FOR UPDATE"""
+        query = f"""SELECT work_id, res_name, res_url FROM {config.GLOBAL_DB_NAME}.res_queue WHERE status = 'new' ORDER BY created_at LIMIT 1 FOR UPDATE"""
         await cursor.execute(query)
         rest = await cursor.fetchall()
         if not rest:
@@ -15,7 +15,7 @@ async def find_new_res_job(conn,cursor):
         print(f"New job found: {rest}")
 
         # Use parameterized query for the UPDATE
-        updated_query = f"UPDATE {config.GLOBAL_DB_NAME}.res_queue SET status = %s WHERE res_id = %s"
+        updated_query = f"UPDATE {config.GLOBAL_DB_NAME}.res_queue SET status = %s WHERE work_id = %s"
         await cursor.execute(updated_query, ("in_progress", rest[0][0]))
         return rest
     except Exception as e:
@@ -32,7 +32,8 @@ async def set_up_new_res_artifacts(conn, cursor):
         
         print(f"Setting up artifacts for {rest[0][1]}")
 
-        for id, res in rest:
+        for id, res, url in rest:
+            res = res.replace(" ", "_").lower()
             res_db_replace_map = {"RES_DB_NAME": f"{res}"}
             await tool.execute_queries_in_directory(cursor,config.RES_DB_DIR,res_db_replace_map)
             print(f"Database created for {res}")
@@ -42,9 +43,13 @@ async def set_up_new_res_artifacts(conn, cursor):
             print(f"Review table created for {res}")
             
             # raise Exception("Simulating an error for testing purposes")  # Simulating an error to test rollback
+            
+            # Add newly created resturant to the global_database.restaurants
+            insert_query = f"INSERT INTO {config.GLOBAL_DB_NAME}.restaurants(res_name, status, res_url) VALUES (%s, %s, %s)"
+            await cursor.execute(insert_query, (res, "active", url))
 
             # Use parameterized query
-            update_query = f"UPDATE {config.GLOBAL_DB_NAME}.res_queue SET status = %s WHERE res_id = %s"
+            update_query = f"UPDATE {config.GLOBAL_DB_NAME}.res_queue SET status = %s WHERE work_id = %s"
             await cursor.execute(update_query, ("done", id))
             print(f"Updated status to done for {res}")
 
@@ -53,7 +58,7 @@ async def set_up_new_res_artifacts(conn, cursor):
         if rest:
             try:
                 for id, res in rest:
-                    update_query = f"UPDATE {config.GLOBAL_DB_NAME}.res_queue SET status = %s WHERE res_id = %s"
+                    update_query = f"UPDATE {config.GLOBAL_DB_NAME}.res_queue SET status = %s WHERE work_id = %s"
                     await cursor.execute(update_query, ("error", id))
                     print(f"Updated status to error for {res}")
             except Exception as cleanup_error:
