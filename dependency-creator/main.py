@@ -19,7 +19,7 @@ async def main():
         await initialize_database(pool)
         print("#"*50)
 
-        await insert_testing_data(pool,number_of_testing_data=20)
+        await insert_testing_data(pool,number_of_testing_data=1)
         print("#"*50)
         
         num_workers = 3
