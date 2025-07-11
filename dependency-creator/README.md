@@ -112,7 +112,7 @@ project/
 **res_queue Table:**
 ```sql
 CREATE TABLE res_queue (
-    res_id INT AUTO_INCREMENT PRIMARY KEY,
+    work_id INT AUTO_INCREMENT PRIMARY KEY,
     res_name VARCHAR(255) NOT NULL,
     status ENUM('new', 'in_progress', 'done', 'error') DEFAULT 'new',
     res_url VARCHAR(500),
