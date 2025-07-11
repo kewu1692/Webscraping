@@ -1,7 +1,8 @@
 CREATE TABLE IF NOT EXISTS < GLOBAL_DB_NAME >.res_queue (
-    res_id INT PRIMARY KEY AUTO_INCREMENT,
-    res_name VARCHAR(50) NOT NULL,
-    status VARCHAR(50) NOT NULL,
-    res_url VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)
+    res_id INT AUTO_INCREMENT PRIMARY KEY,
+    res_name VARCHAR(255) NOT NULL,
+    status ENUM('new', 'in_progress', 'done', 'error') DEFAULT 'new',
+    res_url VARCHAR(500),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
